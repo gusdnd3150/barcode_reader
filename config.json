@@ -1,0 +1,7 @@
+{
+  "SDOP_IP": "127.0.0.1",
+  "SDOP_PORT": "5010",
+  "SERIAL_PORT": "COM5",
+  "BARCODE_ALIAS": "PROC", 
+  "RECON_SEC": 1
+}
