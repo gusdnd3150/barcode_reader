@@ -30,7 +30,6 @@ class Barcode(threading.Thread):
 
 
     def run(self):
-        self.isRun = True
         self.runBarcode()
           # print("Server thread start ", threading.current_thread())
 
@@ -44,9 +43,10 @@ class Barcode(threading.Thread):
                 logger.info('Barcode Connected :: '+ self.serial)
 
             while self.isRun:
-                rx = self.serialTarget.readline().decode('ascii')  # 아스키 타입으로 읽음
-                if(rx != ''):
-                    #print("Receive Data: ", rx)
+                # rx = self.serialTarget.readline().decode('ascii')  # 아스키 타입으로 읽음
+                rx = self.serialTarget.readline()  # byte로 읽음
+                if(len(rx) > 0):
+                    print("Receive Data: ", rx)
                     self.maininstance.reciveBarcodeData(rx)
         except:
             logger.info('Barcode DisConnected')
