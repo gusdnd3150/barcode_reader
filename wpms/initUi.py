@@ -19,6 +19,7 @@ class InitWindow():
     clientThread = None
     barcodeThread =None
     barcodeAlias= ''
+    keepMsg = ''
     
     def __init__(self):
         #super().__init__()
@@ -43,7 +44,9 @@ class InitWindow():
             procCd = data['PROC_CD']
             lineCd = data['LINE_CD']
             alias = data['ALIAS']
+            keepSec = data['KEEP_SEC']
             self.barcodeAlias = alias.ljust(10, ' ')+lineCd.ljust(4, ' ')+procCd.ljust(4, ' ')
+            self.keepMsg = 'KEEPALIVE'.ljust(10, ' ') + lineCd.ljust(4, ' ') + procCd.ljust(4, ' ')
 
             logger.info(ip+'//'+port+'//'+str(serial_port))
             logger.info("사용 가능한 COM 포트:"+str(self.find_com_port()))
@@ -56,10 +59,10 @@ class InitWindow():
             self.clientThread.daemon = True
             self.clientThread.start()
 
-            # schedule.every(5).seconds.do(self.keepAlive)
-            # # step4.스캐쥴 시작
-            # while True:
-            #     schedule.run_pending()
+            schedule.every(int(keepSec)).seconds.do(self.keepAlive)
+            # step4.스캐쥴 시작
+            while True:
+                schedule.run_pending()
 
         except:
             logger.info(str(traceback.print_exc()))
@@ -67,7 +70,7 @@ class InitWindow():
 
     def keepAlive(self):
         if self.isRunClient:
-            self.clientThread.sendMsg('', self.barcodeAlias+'KEEPALIVE')
+            self.clientThread.sendMsg(''.ljust(10, ' ').encode('utf-8'), self.keepMsg)
             logger.info('KEEPALIVE SEND')
         # if self.isRun and self.client_socket != None:
         #     logger.info('wwwwww')
